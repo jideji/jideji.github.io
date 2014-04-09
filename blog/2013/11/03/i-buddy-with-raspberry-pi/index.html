@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>That's A Technical Term</title>
+  <title>I-buddy With Raspberry Pi - That's A Technical Term</title>
   <meta name="author" content="Daniel Josefsson">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jideji.github.io">
+  <link rel="canonical" href="http://jideji.github.io/blog/2013/11/03/i-buddy-with-raspberry-pi">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="That's A Technical Term" type="application/atom+xml">
@@ -63,15 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/11/03/i-buddy-with-raspberry-pi/">I-buddy With Raspberry Pi</a></h1>
+      <h1 class="entry-title">I-buddy With Raspberry Pi</h1>
     
     
       <p class="meta">
@@ -94,7 +91,7 @@
   </header>
 
 
-  <div class="entry-content"><p>I had the i-buddy plugged in at work to the Ubuntu box for a long time, but one day I switched to a laptop, which makes it a little bit less convenient to plug in the i-buddy. The poor thing was collecting dust in a drawer for many months, until this summer I decided to plug it in to my Raspberry Pi as a stand-alone physical event notifier.</p>
+<div class="entry-content"><p>I had the i-buddy plugged in at work to the Ubuntu box for a long time, but one day I switched to a laptop, which makes it a little bit less convenient to plug in the i-buddy. The poor thing was collecting dust in a drawer for many months, until this summer I decided to plug it in to my Raspberry Pi as a stand-alone physical event notifier.</p>
 
 <p>Since I had had luck with the linux driver&rsquo;s last time I decided to try it again on the Pi. No luck. It just wouldn&rsquo;t find it! I was probably doing something stupid. Anyways, I decided to try out a python library instead called <a href="https://github.com/ewall/pybuddy">pybuddy</a>. This was fine by me as most Pi projects are written in Python anyway.</p>
 
@@ -163,22 +160,16 @@
 
 <p>and you should see the i-buddy flapping, twisting and flashing. Please note that if your USB power plug isn&rsquo;t powerful enough your Pi might actually reboot instead! I got it working with my 2A power plug (though I think the Raspberry PI is not supposed to use more than 1A anyway). I use a powered USB hub just to make sure.</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/11/02/i-buddy-with-build-scripts/">I-buddy With Build Scripts</a></h1>
-    
-    
-      <p class="meta">
-        
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Daniel Josefsson</span></span>
+
+      
 
 
 
@@ -190,149 +181,38 @@
   
 
 
-<time datetime="2013-11-02T06:54:00+00:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2013</time>
-        
-      </p>
+<time datetime="2013-11-03T10:03:00+00:00" pubdate data-updated="true">Nov 3<span>rd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/hacking-i-buddy-linux-python-raspberry/'>hacking,i-buddy,linux,python,raspberry</a>, <a class='category' href='/blog/categories/pi/'>pi</a>
+  
+</span>
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>I had been thinking for quite some time that I wanted to build something that I could control from the computer.</p>
-
-<p>Last year it flared up again, when I wanted to get a more obvious indication of how our builds were doing at the office. I then remembered that I&rsquo;d seen something a few years back online called the i-buddy.</p>
-
-<p>The <a href="http://www.i-buddy.com">i-buddy</a> cool computer gadget out there that for some reason has gone unnoticed by most people.</p>
-
-<p>Since it has many different actions (RGB head, flashing heart, flapping wings, twisting) it sounded like just the thing for this purpose.</p>
-
-<p>The i-buddy was originally made solely for use with Live Messenger, but technically inclined people were kind enough to reverse engineer the protocol (<a href="http://imakethin.gs/blog/hacking-the-usb-i-buddy">at least this guy</a>). We now have a few linux drivers and programming libraries out there that can control it. I had an Ubuntu box at work, and since I&rsquo;m a bash fan I went with the linux driver route.</p>
-
-<p>Using <a href="https://github.com/tietomaakari/ibuddy-lkm">ibuddy-lkm</a>, I built and installed a kernel driver. The great thing with this driver is that it gives you a number of virtual files with which you control the i-buddy:</p>
-
-<pre><code>/proc/driver/ibuddy/0/heart
-/proc/driver/ibuddy/0/twist
-/proc/driver/ibuddy/0/wings
-/proc/driver/ibuddy/0/red
-/proc/driver/ibuddy/0/green
-/proc/driver/ibuddy/0/blue
-</code></pre>
-
-<p>Just write any value to one of the files, and that feature will be toggled!</p>
-
-<p>So all I had to do in my build script was to check the response code, and perform a set of actions depending on that response code:</p>
-
-<figure class='code'><figcaption><span>ibuddy.sh </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function </span>send_commands<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">for </span><span class="nb">command </span>in <span class="nv">$*</span>; <span class="k">do</span>
-</span><span class='line'><span class="k">        </span><span class="nb">echo </span>1 &gt; /proc/driver/ibuddy/0/<span class="nv">$command</span>
-</span><span class='line'>    <span class="k">done</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function </span>send_multiple_times<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">for </span>f in <span class="k">$(</span>seq 1 <span class="nv">$2</span><span class="k">)</span>; <span class="k">do</span>
-</span><span class='line'><span class="k">        for </span>commands in <span class="s2">&quot;$1&quot;</span> <span class="s2">&quot;$1&quot;</span>; <span class="k">do</span>
-</span><span class='line'><span class="k">            </span>send_commands <span class="nv">$commands</span>
-</span><span class='line'>            sleep 0.15
-</span><span class='line'>        <span class="k">done</span>
-</span><span class='line'><span class="k">    done</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&quot;$@&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nv">ERROR</span><span class="o">=</span><span class="s2">&quot;$?&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="o">[</span> ! -e <span class="s2">&quot;/proc/driver/ibuddy/0&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">    </span><span class="nb">echo</span> <span class="s2">&quot;IBUDDY NOT FOUND&quot;</span> &gt;&amp;2
-</span><span class='line'><span class="k">else</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">(</span> <span class="se">\</span>
-</span><span class='line'>
-</span><span class='line'>send_commands reset
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;$ERROR&quot;</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">    </span>send_commands green
-</span><span class='line'>    send_multiple_times <span class="s2">&quot;green heart&quot;</span> 7
-</span><span class='line'>    send_commands reset
-</span><span class='line'><span class="k">else</span>
-</span><span class='line'><span class="k">    </span>send_multiple_times <span class="s2">&quot;red wings twist&quot;</span> 15
-</span><span class='line'>    send_commands red
-</span><span class='line'><span class="k">fi</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">)</span> &amp;
-</span><span class='line'>
-</span><span class='line'><span class="k">fi</span>
-</span><span class='line'><span class="k"> </span>
-</span><span class='line'><span class="nb">exit</span> <span class="nv">$ERROR</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now I just had to create an alias by adding the following to my .bashrc file:</p>
-
-<figure class='code'><figcaption><span>.bashrc </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">alias </span><span class="nv">mci</span><span class="o">=</span><span class="s1">&#39;$HOME/scripts/ibuddy.sh mvn clean install&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I have yet to build something myself that is triggered on builds :)</p>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jideji.github.io/blog/2013/11/03/i-buddy-with-raspberry-pi/" data-via="" data-counturl="http://jideji.github.io/blog/2013/11/03/i-buddy-with-raspberry-pi/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/11/02/i-buddy-with-build-scripts/" title="Previous Post: i-buddy with build scripts">&laquo; i-buddy with build scripts</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -353,7 +233,7 @@
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/jideji">@jideji</a> on GitHub
@@ -385,6 +265,7 @@
 
   
 </aside>
+
 
     </div>
   </div>

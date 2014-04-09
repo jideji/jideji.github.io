@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>That's A Technical Term</title>
+  <title>I-buddy With Build Scripts - That's A Technical Term</title>
   <meta name="author" content="Daniel Josefsson">
 
   
-  <meta name="description" content="I had the i-buddy plugged in at work to the Ubuntu box for a long time, but one day I switched to a laptop, which makes it a little bit less &hellip;">
+  <meta name="description" content="I had been thinking for quite some time that I wanted to build something that I could control from the computer. Last year it flared up again, when I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jideji.github.io">
+  <link rel="canonical" href="http://jideji.github.io/blog/2013/11/02/i-buddy-with-build-scripts">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="That's A Technical Term" type="application/atom+xml">
@@ -63,118 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/11/03/i-buddy-with-raspberry-pi/">I-buddy With Raspberry Pi</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-03T10:03:00+00:00" pubdate data-updated="true">Nov 3<span>rd</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I had the i-buddy plugged in at work to the Ubuntu box for a long time, but one day I switched to a laptop, which makes it a little bit less convenient to plug in the i-buddy. The poor thing was collecting dust in a drawer for many months, until this summer I decided to plug it in to my Raspberry Pi as a stand-alone physical event notifier.</p>
-
-<p>Since I had had luck with the linux driver&rsquo;s last time I decided to try it again on the Pi. No luck. It just wouldn&rsquo;t find it! I was probably doing something stupid. Anyways, I decided to try out a python library instead called <a href="https://github.com/ewall/pybuddy">pybuddy</a>. This was fine by me as most Pi projects are written in Python anyway.</p>
-
-<h2>pybuddy</h2>
-
-<p>pybuddy can be used in two ways. You can either use pybuddy.lib in your own program, or you can use pybuddy-daemon.py to start a standalone server which takes commands via port 8888 on 127.0.0.1.</p>
-
-<p>Whether you use pybuddy as library or a server, you might have to configure it. It assumes that your i-buddy&rsquo;s product id is 0x0001. In my case it was 0x0002.</p>
-
-<p>When plugging the i-buddy in, call dmesg:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>pi@raspberrypi ~/hack <span class="nv">$ </span>dmesg
-</span><span class='line'> ...
-</span><span class='line'>
-</span><span class='line'><span class="o">[</span>   23.603277<span class="o">]</span> usb 1-1.2: new low-speed USB device number 5 using dwc_otg
-</span><span class='line'><span class="o">[</span>   23.710086<span class="o">]</span> usb 1-1.2: New USB device found, <span class="nv">idVendor</span><span class="o">=</span>1130, <span class="nv">idProduct</span><span class="o">=</span>0002
-</span><span class='line'><span class="o">[</span>   23.710116<span class="o">]</span> usb 1-1.2: New USB device strings: <span class="nv">Mfr</span><span class="o">=</span>0, <span class="nv">Product</span><span class="o">=</span>2, <span class="nv">SerialNumber</span><span class="o">=</span>0
-</span><span class='line'>
-</span><span class='line'>...
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In this case the product id is 0002, so pybuddy has to be updated <a href="https://github.com/ewall/pybuddy/blob/master/pybuddylib.py#L77">here</a>:</p>
-
-<figure class='code'><figcaption><span>pybuddylib.py </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">### iBuddy Device Class</span>
-</span><span class='line'><span class="k">class</span> <span class="nc">iBuddyDevice</span><span class="p">:</span>
-</span><span class='line'>  <span class="n">USB_VENDOR</span>  <span class="o">=</span> <span class="mh">0x1130</span>
-</span><span class='line'>  <span class="n">USB_PRODUCT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mh">0x0001</span><span class="p">)</span> <span class="c"># &lt;-- change this</span>
-</span><span class='line'>  <span class="n">BATTERY</span>     <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="n">SETUP</span>       <span class="o">=</span> <span class="p">(</span><span class="mh">0x22</span><span class="p">,</span> <span class="mh">0x09</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">MESS</span>        <span class="o">=</span> <span class="p">(</span><span class="mh">0x55</span><span class="p">,</span> <span class="mh">0x53</span><span class="p">,</span> <span class="mh">0x42</span><span class="p">,</span> <span class="mh">0x43</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x40</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Or equivalent in pybuddy-daemon.py.</p>
-
-<p>To make sure it works, you can run pybuddy-daemon.py (it is self-contained, so remember to update the product id in this file as well!):</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>su pybuddy-daemon.py
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then in a separate terminal, type:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;DEMO&quot;</span> | nc -4u -w1 127.0.0.1 8888
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>and you should see the i-buddy flapping, twisting and flashing. Please note that if your USB power plug isn&rsquo;t powerful enough your Pi might actually reboot instead! I got it working with my 2A power plug (though I think the Raspberry PI is not supposed to use more than 1A anyway). I use a powered USB hub just to make sure.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/11/02/i-buddy-with-build-scripts/">I-buddy With Build Scripts</a></h1>
+      <h1 class="entry-title">I-buddy With Build Scripts</h1>
     
     
       <p class="meta">
@@ -197,7 +91,7 @@
   </header>
 
 
-  <div class="entry-content"><p>I had been thinking for quite some time that I wanted to build something that I could control from the computer.</p>
+<div class="entry-content"><p>I had been thinking for quite some time that I wanted to build something that I could control from the computer.</p>
 
 <p>Last year it flared up again, when I wanted to get a more obvious indication of how our builds were doing at the office. I then remembered that I&rsquo;d seen something a few years back online called the i-buddy.</p>
 
@@ -321,18 +215,59 @@
 
 <p>I have yet to build something myself that is triggered on builds :)</p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Daniel Josefsson</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2013-11-02T06:54:00+00:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
   
-  <div class="pagination">
+    <a class='category' href='/blog/categories/bash-hacking-i-buddy-linux/'>bash,hacking,i-buddy,linux</a>
+  
+</span>
+
+
+    </p>
     
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jideji.github.io/blog/2013/11/02/i-buddy-with-build-scripts/" data-via="" data-counturl="http://jideji.github.io/blog/2013/11/02/i-buddy-with-build-scripts/" >Tweet</a>
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/11/03/i-buddy-with-raspberry-pi/" title="Next Post: i-buddy with raspberry pi">i-buddy with raspberry pi &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -353,7 +288,7 @@
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/jideji">@jideji</a> on GitHub
@@ -385,6 +320,7 @@
 
   
 </aside>
+
 
     </div>
   </div>
