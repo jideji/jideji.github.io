@@ -4,7 +4,7 @@
   <title><![CDATA[That's A Technical Term]]></title>
   <link href="http://jideji.github.io/atom.xml" rel="self"/>
   <link href="http://jideji.github.io/"/>
-  <updated>2014-04-09T20:22:44+01:00</updated>
+  <updated>2014-04-09T20:26:34+01:00</updated>
   <id>http://jideji.github.io/</id>
   <author>
     <name><![CDATA[Daniel Josefsson]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[I-buddy With Raspberry Pi]]></title>
-    <link href="http://jideji.github.io/blog/2013/11/03/i-buddy-with-raspberry-pi/"/>
-    <updated>2013-11-03T10:03:00+00:00</updated>
-    <id>http://jideji.github.io/blog/2013/11/03/i-buddy-with-raspberry-pi</id>
+    <link href="http://jideji.github.io/blog/2014/04/08/i-buddy-with-raspberry-pi/"/>
+    <updated>2014-04-08T11:03:00+01:00</updated>
+    <id>http://jideji.github.io/blog/2014/04/08/i-buddy-with-raspberry-pi</id>
     <content type="html"><![CDATA[<p>I had the i-buddy plugged in at work to the Ubuntu box for a long time, but one day I switched to a laptop, which makes it a little bit less convenient to plug in the i-buddy. The poor thing was collecting dust in a drawer for many months, until this summer I decided to plug it in to my Raspberry Pi as a stand-alone physical event notifier.</p>
 
 <p>Since I had had luck with the linux driver&rsquo;s last time I decided to try it again on the Pi. No luck. It just wouldn&rsquo;t find it! I was probably doing something stupid. Anyways, I decided to try out a python library instead called <a href="https://github.com/ewall/pybuddy">pybuddy</a>. This was fine by me as most Pi projects are written in Python anyway.</p>
