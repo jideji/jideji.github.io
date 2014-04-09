@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "i-buddy with raspberry pi"
-date: 2013-11-03 10:03:00 +0000
+date: 2014-04-08 10:03:00 +0000
 comments: true
 categories: hacking,i-buddy,linux,python,raspberry pi
 ---
