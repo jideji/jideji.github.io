@@ -3,7 +3,7 @@ layout: post
 title: "i-buddy with build scripts"
 date: 2013-11-02 06:54:00 +0000
 comments: true
-categories: bash,hacking,i-buddy,linux
+categories: [bash,hacking,i-buddy,linux]
 ---
 I had been thinking for quite some time that I wanted to build something that I could control from the computer.
 

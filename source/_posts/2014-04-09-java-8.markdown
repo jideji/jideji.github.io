@@ -1,0 +1,15 @@
+---
+layout: post
+title: "Java 8"
+date: 2014-04-09 20:28:56 +0100
+comments: true
+published: false
+categories: [programming, functional programming, java8, lambda]
+---
+I was with increasing excitement following the upcoming release of java7 with lambdas. Naturally I was extremely disappointed when it was taken out. And then java 8 was delayed. But who cares? It is here now!
+
+[What's New in Java 8](https://leanpub.com/whatsnewinjava8/read) is a great page listing the highlights of Java8. It gives you a nice overview of the most prominent features along with a brief explanation of each.
+
+I can also recommend getting the book '[Java 8 Lambdas](http://shop.oreilly.com/product/0636920030713.do)' by [Richard Warburton](https://twitter.com/RichardWarburto) which is a a really good introduction to lambdas in java8 even if you have no experience with functional programming. I have a fairly good understanding of fp thanks to my university days with Haskell and Erlang, plus reading up on Scala and clojure in my spare time and attending talks, but it is all mostly theoretical so I did not mind reading through the basics again.
+
+So far I am most excited about lambdas, default methods and optionals!

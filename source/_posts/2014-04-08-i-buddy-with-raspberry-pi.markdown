@@ -3,11 +3,11 @@ layout: post
 title: "i-buddy with raspberry pi"
 date: 2014-04-08 10:03:00 +0000
 comments: true
-categories: hacking,i-buddy,linux,python,raspberry pi
+categories: [hacking,i-buddy,linux,python,raspberry pi]
 ---
 I had the i-buddy plugged in at work to the Ubuntu box for a long time, but one day I switched to a laptop, which makes it a little bit less convenient to plug in the i-buddy. The poor thing was collecting dust in a drawer for many months, until this summer I decided to plug it in to my Raspberry Pi as a stand-alone physical event notifier.
 
-Since I had had luck with the linux driver's last time I decided to try it again on the Pi. No luck. It just wouldn't find it! I was probably doing something stupid. Anyways, I decided to try out a python library instead called [pybuddy](https://github.com/ewall/pybuddy). This was fine by me as most Pi projects are written in Python anyway.
+Since I had had luck with the linux drivers last time I decided to try it again on the Pi. No luck. It just wouldn't find it! I was probably doing something stupid. Anyways, I decided to try out a python library instead called [pybuddy](https://github.com/ewall/pybuddy). This was fine by me as most Pi projects are written in Python anyway.
 
 ##pybuddy
 
