@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[That's A Technical Term]]></title>
-  <link href="http://jideji.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: I-buddy | That's A Technical Term]]></title>
+  <link href="http://jideji.github.io/blog/categories/i-buddy/atom.xml" rel="self"/>
   <link href="http://jideji.github.io/"/>
   <updated>2014-04-11T21:23:24+01:00</updated>
   <id>http://jideji.github.io/</id>
@@ -12,45 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Thoughts on Conferences]]></title>
-    <link href="http://jideji.github.io/blog/2014/04/11/thoughts-on-conferences/"/>
-    <updated>2014-04-11T20:52:29+01:00</updated>
-    <id>http://jideji.github.io/blog/2014/04/11/thoughts-on-conferences</id>
-    <content type="html"><![CDATA[<p>I have attended a few of tech conferences in the last couple of years.
-JavaOne and QConn in 2012, and JavaOne and LJC Open Conference in 2013.</p>
-
-<p>That reminds me: &lsquo;Design Patterns In Modern JVM Languages&rsquo; by <a href="https://twitter.com/venkat_s">Venkat Subramaniam</a> is strongly recommended, attend if you can! Or at least watch the video on <a href="https://www.youtube.com/watch?v=nwxcI6FNbu4">YouTube</a>.</p>
-
-<h2>Big vs small conference</h2>
-
-<p>So. JavaOne is huge. LJC Open Conference not very big. Which is best?</p>
-
-<p>Naturally they have their positives and negatives.</p>
-
-<p>JavaOne, because of its size, attracts lots of talented speakers and guests. They have maaany different tracks with different focus, so you have a lot to choose from.</p>
-
-<p>LJC Open Conference on the other hand is informal. People decide on the day if they want to do a talk, the talks are sorted, and you pick what you want to attend. It is all very relaxed, you have experienced speaker mixed with first-timers, and it all feels very personal.</p>
-
-<p>I personally prefer the smaller, more informal, type.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Java 8]]></title>
-    <link href="http://jideji.github.io/blog/2014/04/09/java-8/"/>
-    <updated>2014-04-09T20:28:56+01:00</updated>
-    <id>http://jideji.github.io/blog/2014/04/09/java-8</id>
-    <content type="html"><![CDATA[<p>I was with increasing excitement following the upcoming release of java7 with lambdas. Naturally I was extremely disappointed when it was taken out. And then java 8 was delayed. But who cares? It is here now!</p>
-
-<p><a href="https://leanpub.com/whatsnewinjava8/read">What&rsquo;s New in Java 8</a> is a great page listing the highlights of Java8. It gives you a nice overview of the most prominent features along with a brief explanation of each.</p>
-
-<p>I can also recommend getting the book &lsquo;<a href="http://shop.oreilly.com/product/0636920030713.do">Java 8 Lambdas</a>&rsquo; by <a href="https://twitter.com/RichardWarburto">Richard Warburton</a> which is a a really good introduction to lambdas in java8 even if you have no experience with functional programming. I have a fairly good understanding of fp thanks to my university days with Haskell and Erlang, plus reading up on Scala and clojure in my spare time and attending talks, but it is all mostly theoretical so I did not mind reading through the basics again.</p>
-
-<p>So far I am most excited about lambdas, default methods and optionals!</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[I-buddy With Raspberry Pi]]></title>
@@ -69,7 +30,7 @@ JavaOne and QConn in 2012, and JavaOne and LJC Open Conference in 2013.</p>
 
 <p>When plugging the i-buddy in, call dmesg:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -78,19 +39,18 @@ JavaOne and QConn in 2012, and JavaOne and LJC Open Conference in 2013.</p>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>pi@raspberrypi ~/hack <span class="nv">$ </span>dmesg
-</span><span class='line'> ...
+</span><span class='line'> &amp;hellip;&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'><span class="o">[</span>   23.603277<span class="o">]</span> usb 1-1.2: new low-speed USB device number 5 using dwc_otg
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>   23.603277<span class="o">]</span> usb 1-1.2: new low-speed USB device number 5 using dwc_otg
 </span><span class='line'><span class="o">[</span>   23.710086<span class="o">]</span> usb 1-1.2: New USB device found, <span class="nv">idVendor</span><span class="o">=</span>1130, <span class="nv">idProduct</span><span class="o">=</span>0002
-</span><span class='line'><span class="o">[</span>   23.710116<span class="o">]</span> usb 1-1.2: New USB device strings: <span class="nv">Mfr</span><span class="o">=</span>0, <span class="nv">Product</span><span class="o">=</span>2, <span class="nv">SerialNumber</span><span class="o">=</span>0
+</span><span class='line'><span class="o">[</span>   23.710116<span class="o">]</span> usb 1-1.2: New USB device strings: <span class="nv">Mfr</span><span class="o">=</span>0, <span class="nv">Product</span><span class="o">=</span>2, <span class="nv">SerialNumber</span><span class="o">=</span>0&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>...
-</span></code></pre></td></tr></table></div></figure>
-
+</span><span class='line'>&lt;p&gt;&amp;hellip;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>In this case the product id is 0002, so pybuddy has to be updated <a href="https://github.com/ewall/pybuddy/blob/master/pybuddylib.py#L77">here</a>:</p>
 
-<figure class='code'><figcaption><span>pybuddylib.py </span></figcaption>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>pybuddylib.py </span></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -98,31 +58,34 @@ JavaOne and QConn in 2012, and JavaOne and LJC Open Conference in 2013.</p>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">### iBuddy Device Class</span>
-</span><span class='line'><span class="k">class</span> <span class="nc">iBuddyDevice</span><span class="p">:</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">iBuddy</span> <span class="n">Device</span> <span class="n">Class</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">class</span> <span class="nc">iBuddyDevice</span><span class="p">:</span>
 </span><span class='line'>  <span class="n">USB_VENDOR</span>  <span class="o">=</span> <span class="mh">0x1130</span>
-</span><span class='line'>  <span class="n">USB_PRODUCT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mh">0x0001</span><span class="p">)</span> <span class="c"># &lt;-- change this</span>
+</span><span class='line'>  <span class="n">USB_PRODUCT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mh">0x0001</span><span class="p">)</span> <span class="c"># &amp;lt;&amp;mdash; change this</span>
 </span><span class='line'>  <span class="n">BATTERY</span>     <span class="o">=</span> <span class="mi">0</span>
 </span><span class='line'>  <span class="n">SETUP</span>       <span class="o">=</span> <span class="p">(</span><span class="mh">0x22</span><span class="p">,</span> <span class="mh">0x09</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">)</span>
 </span><span class='line'>  <span class="n">MESS</span>        <span class="o">=</span> <span class="p">(</span><span class="mh">0x55</span><span class="p">,</span> <span class="mh">0x53</span><span class="p">,</span> <span class="mh">0x42</span><span class="p">,</span> <span class="mh">0x43</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x40</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Or equivalent in pybuddy-daemon.py.</p>
 
 <p>To make sure it works, you can run pybuddy-daemon.py (it is self-contained, so remember to update the product id in this file as well!):</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>su pybuddy-daemon.py
-</span></code></pre></td></tr></table></div></figure>
-
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Then in a separate terminal, type:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;DEMO&quot;</span> | nc -4u -w1 127.0.0.1 8888
-</span></code></pre></td></tr></table></div></figure>
-
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">echo</span> &amp;ldquo;DEMO&amp;rdquo; | nc -4u -w1 127.0.0.1 8888
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>and you should see the i-buddy flapping, twisting and flashing. Please note that if your USB power plug isn&rsquo;t powerful enough your Pi might actually reboot instead! I got it working with my 2A power plug (though I think the Raspberry PI is not supposed to use more than 1A anyway). I use a powered USB hub just to make sure.</p>
 ]]></content>
@@ -157,7 +120,7 @@ JavaOne and QConn in 2012, and JavaOne and LJC Open Conference in 2013.</p>
 
 <p>So all I had to do in my build script was to check the response code, and perform a set of actions depending on that response code:</p>
 
-<figure class='code'><figcaption><span>ibuddy.sh </span></figcaption>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>ibuddy.sh </span></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -201,59 +164,91 @@ JavaOne and QConn in 2012, and JavaOne and LJC Open Conference in 2013.</p>
 <span class='line-number'>41</span>
 <span class='line-number'>42</span>
 <span class='line-number'>43</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'><span class="k">function </span>send_commands<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">for </span><span class="nb">command </span>in <span class="nv">$*</span>; <span class="k">do</span>
-</span><span class='line'><span class="k">        </span><span class="nb">echo </span>1 &gt; /proc/driver/ibuddy/0/<span class="nv">$command</span>
+</span><span class='line'>&lt;h1&gt;!/bin/bash&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;function send_commands<span class="o">()</span> <span class="o">{</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;for <span class="nb">command </span>in <span class="nv">$*</span>; <span class="k">do</span>
+</span><span class='line'><span class="k">    </span><span class="nb">echo </span>1 &amp;gt; /proc/driver/ibuddy/0/<span class="nv">$command</span>
+</span><span class='line'><span class="k">done</span>
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">}</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;function send_multiple_times<span class="o">()</span> <span class="o">{</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;for f in <span class="k">$(</span>seq 1 <span class="nv">$2</span><span class="k">)</span>; <span class="k">do</span>
+</span><span class='line'><span class="k">    for </span>commands in <span class="s2">&quot;$1&quot;</span> <span class="s2">&quot;$1&quot;</span>; <span class="k">do</span>
+</span><span class='line'><span class="k">        </span>send_commands <span class="nv">$commands</span>
+</span><span class='line'>        sleep 0.15
 </span><span class='line'>    <span class="k">done</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="k">done</span>
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
 </span><span class='line'>
-</span><span class='line'><span class="k">function </span>send_multiple_times<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">for </span>f in <span class="k">$(</span>seq 1 <span class="nv">$2</span><span class="k">)</span>; <span class="k">do</span>
-</span><span class='line'><span class="k">        for </span>commands in <span class="s2">&quot;$1&quot;</span> <span class="s2">&quot;$1&quot;</span>; <span class="k">do</span>
-</span><span class='line'><span class="k">            </span>send_commands <span class="nv">$commands</span>
-</span><span class='line'>            sleep 0.15
-</span><span class='line'>        <span class="k">done</span>
-</span><span class='line'><span class="k">    done</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>&lt;p&gt;<span class="o">}</span>&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'><span class="s2">&quot;$@&quot;</span>
+</span><span class='line'>&lt;p&gt;&amp;ldquo;<span class="nv">$@</span>&amp;rdquo;&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'><span class="nv">ERROR</span><span class="o">=</span><span class="s2">&quot;$?&quot;</span>
+</span><span class='line'>&lt;p&gt;ERROR<span class="o">=</span>&amp;ldquo;<span class="nv">$?</span>&amp;rdquo;&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="o">[</span> ! -e <span class="s2">&quot;/proc/driver/ibuddy/0&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">    </span><span class="nb">echo</span> <span class="s2">&quot;IBUDDY NOT FOUND&quot;</span> &gt;&amp;2
-</span><span class='line'><span class="k">else</span>
+</span><span class='line'>&lt;p&gt;if <span class="o">[</span> ! -e &amp;ldquo;/proc/driver/ibuddy/0&amp;rdquo; <span class="o">]</span>; <span class="k">then</span>&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'><span class="o">(</span> <span class="se">\</span>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;echo <span class="s2">&quot;IBUDDY NOT FOUND&quot;</span> &amp;gt;&amp;amp;2
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
 </span><span class='line'>
+</span><span class='line'>&lt;p&gt;else&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">(</span> <span class="se">\&lt;</span>/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;send_commands reset&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;if <span class="o">[</span> &amp;ldquo;<span class="nv">$ERROR</span>&amp;rdquo; <span class="o">=</span> &amp;ldquo;0&amp;rdquo; <span class="o">]</span>; <span class="k">then</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;send_commands green
+</span><span class='line'>send_multiple_times <span class="s2">&quot;green heart&quot;</span> 7
 </span><span class='line'>send_commands reset
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
 </span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;$ERROR&quot;</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">    </span>send_commands green
-</span><span class='line'>    send_multiple_times <span class="s2">&quot;green heart&quot;</span> 7
-</span><span class='line'>    send_commands reset
-</span><span class='line'><span class="k">else</span>
-</span><span class='line'><span class="k">    </span>send_multiple_times <span class="s2">&quot;red wings twist&quot;</span> 15
-</span><span class='line'>    send_commands red
-</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>&lt;p&gt;else&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'><span class="o">)</span> &amp;
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;send_multiple_times <span class="s2">&quot;red wings twist&quot;</span> 15
+</span><span class='line'>send_commands red
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
 </span><span class='line'>
-</span><span class='line'><span class="k">fi</span>
-</span><span class='line'><span class="k"> </span>
-</span><span class='line'><span class="nb">exit</span> <span class="nv">$ERROR</span>
-</span></code></pre></td></tr></table></div></figure>
-
+</span><span class='line'>&lt;p&gt;fi&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">)</span> &amp;amp;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;fi&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;exit <span class="nv">$ERROR</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Now I just had to create an alias by adding the following to my .bashrc file:</p>
 
-<figure class='code'><figcaption><span>.bashrc </span></figcaption>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.bashrc </span></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">alias </span><span class="nv">mci</span><span class="o">=</span><span class="s1">&#39;$HOME/scripts/ibuddy.sh mvn clean install&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">alias </span><span class="nv">mci</span><span class="o">=</span>&amp;lsquo;<span class="nv">$HOME</span>/scripts/ibuddy.sh mvn clean install&amp;rsquo;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>I have yet to build something myself that is triggered on builds :)</p>
 ]]></content>

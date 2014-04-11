@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Bash | That's A Technical Term]]></title>
+  <link href="http://jideji.github.io/blog/categories/bash/atom.xml" rel="self"/>
+  <link href="http://jideji.github.io/"/>
+  <updated>2014-04-11T21:23:24+01:00</updated>
+  <id>http://jideji.github.io/</id>
+  <author>
+    <name><![CDATA[Daniel Josefsson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[I-buddy With Build Scripts]]></title>
+    <link href="http://jideji.github.io/blog/2013/11/02/i-buddy-with-build-scripts/"/>
+    <updated>2013-11-02T06:54:00+00:00</updated>
+    <id>http://jideji.github.io/blog/2013/11/02/i-buddy-with-build-scripts</id>
+    <content type="html"><![CDATA[<p>I had been thinking for quite some time that I wanted to build something that I could control from the computer.</p>
+
+<p>Last year it flared up again, when I wanted to get a more obvious indication of how our builds were doing at the office. I then remembered that I&rsquo;d seen something a few years back online called the i-buddy.</p>
+
+<p>The <a href="http://www.i-buddy.com">i-buddy</a> cool computer gadget out there that for some reason has gone unnoticed by most people.</p>
+
+<p>Since it has many different actions (RGB head, flashing heart, flapping wings, twisting) it sounded like just the thing for this purpose.</p>
+
+<p>The i-buddy was originally made solely for use with Live Messenger, but technically inclined people were kind enough to reverse engineer the protocol (<a href="http://imakethin.gs/blog/hacking-the-usb-i-buddy">at least this guy</a>). We now have a few linux drivers and programming libraries out there that can control it. I had an Ubuntu box at work, and since I&rsquo;m a bash fan I went with the linux driver route.</p>
+
+<p>Using <a href="https://github.com/tietomaakari/ibuddy-lkm">ibuddy-lkm</a>, I built and installed a kernel driver. The great thing with this driver is that it gives you a number of virtual files with which you control the i-buddy:</p>
+
+<pre><code>/proc/driver/ibuddy/0/heart
+/proc/driver/ibuddy/0/twist
+/proc/driver/ibuddy/0/wings
+/proc/driver/ibuddy/0/red
+/proc/driver/ibuddy/0/green
+/proc/driver/ibuddy/0/blue
+</code></pre>
+
+<p>Just write any value to one of the files, and that feature will be toggled!</p>
+
+<p>So all I had to do in my build script was to check the response code, and perform a set of actions depending on that response code:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>ibuddy.sh </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;!/bin/bash&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;function send_commands<span class="o">()</span> <span class="o">{</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;for <span class="nb">command </span>in <span class="nv">$*</span>; <span class="k">do</span>
+</span><span class='line'><span class="k">    </span><span class="nb">echo </span>1 &amp;gt; /proc/driver/ibuddy/0/<span class="nv">$command</span>
+</span><span class='line'><span class="k">done</span>
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">}</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;function send_multiple_times<span class="o">()</span> <span class="o">{</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;for f in <span class="k">$(</span>seq 1 <span class="nv">$2</span><span class="k">)</span>; <span class="k">do</span>
+</span><span class='line'><span class="k">    for </span>commands in <span class="s2">&quot;$1&quot;</span> <span class="s2">&quot;$1&quot;</span>; <span class="k">do</span>
+</span><span class='line'><span class="k">        </span>send_commands <span class="nv">$commands</span>
+</span><span class='line'>        sleep 0.15
+</span><span class='line'>    <span class="k">done</span>
+</span><span class='line'><span class="k">done</span>
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">}</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&amp;ldquo;<span class="nv">$@</span>&amp;rdquo;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;ERROR<span class="o">=</span>&amp;ldquo;<span class="nv">$?</span>&amp;rdquo;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;if <span class="o">[</span> ! -e &amp;ldquo;/proc/driver/ibuddy/0&amp;rdquo; <span class="o">]</span>; <span class="k">then</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;echo <span class="s2">&quot;IBUDDY NOT FOUND&quot;</span> &amp;gt;&amp;amp;2
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;else&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">(</span> <span class="se">\&lt;</span>/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;send_commands reset&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;if <span class="o">[</span> &amp;ldquo;<span class="nv">$ERROR</span>&amp;rdquo; <span class="o">=</span> &amp;ldquo;0&amp;rdquo; <span class="o">]</span>; <span class="k">then</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;send_commands green
+</span><span class='line'>send_multiple_times <span class="s2">&quot;green heart&quot;</span> 7
+</span><span class='line'>send_commands reset
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;else&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;send_multiple_times <span class="s2">&quot;red wings twist&quot;</span> 15
+</span><span class='line'>send_commands red
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;fi&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">)</span> &amp;amp;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;fi&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;exit <span class="nv">$ERROR</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Now I just had to create an alias by adding the following to my .bashrc file:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.bashrc </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">alias </span><span class="nv">mci</span><span class="o">=</span>&amp;lsquo;<span class="nv">$HOME</span>/scripts/ibuddy.sh mvn clean install&amp;rsquo;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>I have yet to build something myself that is triggered on builds :)</p>
+]]></content>
+  </entry>
+  
+</feed>

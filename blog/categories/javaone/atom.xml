@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: JavaOne | That's A Technical Term]]></title>
+  <link href="http://jideji.github.io/blog/categories/javaone/atom.xml" rel="self"/>
+  <link href="http://jideji.github.io/"/>
+  <updated>2014-04-11T21:23:24+01:00</updated>
+  <id>http://jideji.github.io/</id>
+  <author>
+    <name><![CDATA[Daniel Josefsson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Thoughts on Conferences]]></title>
+    <link href="http://jideji.github.io/blog/2014/04/11/thoughts-on-conferences/"/>
+    <updated>2014-04-11T20:52:29+01:00</updated>
+    <id>http://jideji.github.io/blog/2014/04/11/thoughts-on-conferences</id>
+    <content type="html"><![CDATA[<p>I have attended a few of tech conferences in the last couple of years.
+JavaOne and QConn in 2012, and JavaOne and LJC Open Conference in 2013.</p>
+
+<p>That reminds me: &lsquo;Design Patterns In Modern JVM Languages&rsquo; by <a href="https://twitter.com/venkat_s">Venkat Subramaniam</a> is strongly recommended, attend if you can! Or at least watch the video on <a href="https://www.youtube.com/watch?v=nwxcI6FNbu4">YouTube</a>.</p>
+
+<h2>Big vs small conference</h2>
+
+<p>So. JavaOne is huge. LJC Open Conference not very big. Which is best?</p>
+
+<p>Naturally they have their positives and negatives.</p>
+
+<p>JavaOne, because of its size, attracts lots of talented speakers and guests. They have maaany different tracks with different focus, so you have a lot to choose from.</p>
+
+<p>LJC Open Conference on the other hand is informal. People decide on the day if they want to do a talk, the talks are sorted, and you pick what you want to attend. It is all very relaxed, you have experienced speaker mixed with first-timers, and it all feels very personal.</p>
+
+<p>I personally prefer the smaller, more informal, type.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Bash,hacking,i-buddy,linux | That's A Technical Term]]></title>
-  <link href="http://jideji.github.io/blog/categories/bash-hacking-i-buddy-linux/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Linux | That's A Technical Term]]></title>
+  <link href="http://jideji.github.io/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://jideji.github.io/"/>
-  <updated>2014-04-09T20:26:34+01:00</updated>
+  <updated>2014-04-11T21:23:24+01:00</updated>
   <id>http://jideji.github.io/</id>
   <author>
     <name><![CDATA[Daniel Josefsson]]></name>
@@ -12,6 +12,84 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[I-buddy With Raspberry Pi]]></title>
+    <link href="http://jideji.github.io/blog/2014/04/08/i-buddy-with-raspberry-pi/"/>
+    <updated>2014-04-08T11:03:00+01:00</updated>
+    <id>http://jideji.github.io/blog/2014/04/08/i-buddy-with-raspberry-pi</id>
+    <content type="html"><![CDATA[<p>I had the i-buddy plugged in at work to the Ubuntu box for a long time, but one day I switched to a laptop, which makes it a little bit less convenient to plug in the i-buddy. The poor thing was collecting dust in a drawer for many months, until this summer I decided to plug it in to my Raspberry Pi as a stand-alone physical event notifier.</p>
+
+<p>Since I had had luck with the linux drivers last time I decided to try it again on the Pi. No luck. It just wouldn&rsquo;t find it! I was probably doing something stupid. Anyways, I decided to try out a python library instead called <a href="https://github.com/ewall/pybuddy">pybuddy</a>. This was fine by me as most Pi projects are written in Python anyway.</p>
+
+<h2>pybuddy</h2>
+
+<p>pybuddy can be used in two ways. You can either use pybuddy.lib in your own program, or you can use pybuddy-daemon.py to start a standalone server which takes commands via port 8888 on 127.0.0.1.</p>
+
+<p>Whether you use pybuddy as library or a server, you might have to configure it. It assumes that your i-buddy&rsquo;s product id is 0x0001. In my case it was 0x0002.</p>
+
+<p>When plugging the i-buddy in, call dmesg:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>pi@raspberrypi ~/hack <span class="nv">$ </span>dmesg
+</span><span class='line'> &amp;hellip;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>   23.603277<span class="o">]</span> usb 1-1.2: new low-speed USB device number 5 using dwc_otg
+</span><span class='line'><span class="o">[</span>   23.710086<span class="o">]</span> usb 1-1.2: New USB device found, <span class="nv">idVendor</span><span class="o">=</span>1130, <span class="nv">idProduct</span><span class="o">=</span>0002
+</span><span class='line'><span class="o">[</span>   23.710116<span class="o">]</span> usb 1-1.2: New USB device strings: <span class="nv">Mfr</span><span class="o">=</span>0, <span class="nv">Product</span><span class="o">=</span>2, <span class="nv">SerialNumber</span><span class="o">=</span>0&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&amp;hellip;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>In this case the product id is 0002, so pybuddy has to be updated <a href="https://github.com/ewall/pybuddy/blob/master/pybuddylib.py#L77">here</a>:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>pybuddylib.py </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">iBuddy</span> <span class="n">Device</span> <span class="n">Class</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">class</span> <span class="nc">iBuddyDevice</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">USB_VENDOR</span>  <span class="o">=</span> <span class="mh">0x1130</span>
+</span><span class='line'>  <span class="n">USB_PRODUCT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mh">0x0001</span><span class="p">)</span> <span class="c"># &amp;lt;&amp;mdash; change this</span>
+</span><span class='line'>  <span class="n">BATTERY</span>     <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="n">SETUP</span>       <span class="o">=</span> <span class="p">(</span><span class="mh">0x22</span><span class="p">,</span> <span class="mh">0x09</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">MESS</span>        <span class="o">=</span> <span class="p">(</span><span class="mh">0x55</span><span class="p">,</span> <span class="mh">0x53</span><span class="p">,</span> <span class="mh">0x42</span><span class="p">,</span> <span class="mh">0x43</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x40</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Or equivalent in pybuddy-daemon.py.</p>
+
+<p>To make sure it works, you can run pybuddy-daemon.py (it is self-contained, so remember to update the product id in this file as well!):</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>su pybuddy-daemon.py
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Then in a separate terminal, type:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">echo</span> &amp;ldquo;DEMO&amp;rdquo; | nc -4u -w1 127.0.0.1 8888
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>and you should see the i-buddy flapping, twisting and flashing. Please note that if your USB power plug isn&rsquo;t powerful enough your Pi might actually reboot instead! I got it working with my 2A power plug (though I think the Raspberry PI is not supposed to use more than 1A anyway). I use a powered USB hub just to make sure.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[I-buddy With Build Scripts]]></title>

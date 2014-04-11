@@ -2,19 +2,27 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://jideji.github.io/blog/2013/11/02/i-buddy-with-build-scripts/</loc>
-        <lastmod>2014-04-08T22:11:13+01:00</lastmod>
+        <lastmod>2014-04-10T21:00:32+01:00</lastmod>
     </url>
     <url>
         <loc>http://jideji.github.io/blog/2014/04/08/i-buddy-with-raspberry-pi/</loc>
-        <lastmod>2014-04-09T20:26:33+01:00</lastmod>
+        <lastmod>2014-04-11T20:06:05+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jideji.github.io/blog/2014/04/09/java-8/</loc>
+        <lastmod>2014-04-11T21:18:41+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jideji.github.io/blog/2014/04/11/thoughts-on-conferences/</loc>
+        <lastmod>2014-04-11T21:11:08+01:00</lastmod>
     </url>
     <url>
         <loc>http://jideji.github.io/blog/archives/</loc>
-        <lastmod>2014-04-09T20:26:33+01:00</lastmod>
+        <lastmod>2014-04-11T21:18:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://jideji.github.io/</loc>
-        <lastmod>2014-04-09T20:26:33+01:00</lastmod>
+        <lastmod>2014-04-11T21:18:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://jideji.github.io/robots.txt</loc>

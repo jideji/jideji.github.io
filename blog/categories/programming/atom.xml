@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Programming | That's A Technical Term]]></title>
+  <link href="http://jideji.github.io/blog/categories/programming/atom.xml" rel="self"/>
+  <link href="http://jideji.github.io/"/>
+  <updated>2014-04-11T21:23:24+01:00</updated>
+  <id>http://jideji.github.io/</id>
+  <author>
+    <name><![CDATA[Daniel Josefsson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Java 8]]></title>
+    <link href="http://jideji.github.io/blog/2014/04/09/java-8/"/>
+    <updated>2014-04-09T20:28:56+01:00</updated>
+    <id>http://jideji.github.io/blog/2014/04/09/java-8</id>
+    <content type="html"><![CDATA[<p>I was with increasing excitement following the upcoming release of java7 with lambdas. Naturally I was extremely disappointed when it was taken out. And then java 8 was delayed. But who cares? It is here now!</p>
+
+<p><a href="https://leanpub.com/whatsnewinjava8/read">What&rsquo;s New in Java 8</a> is a great page listing the highlights of Java8. It gives you a nice overview of the most prominent features along with a brief explanation of each.</p>
+
+<p>I can also recommend getting the book &lsquo;<a href="http://shop.oreilly.com/product/0636920030713.do">Java 8 Lambdas</a>&rsquo; by <a href="https://twitter.com/RichardWarburto">Richard Warburton</a> which is a a really good introduction to lambdas in java8 even if you have no experience with functional programming. I have a fairly good understanding of fp thanks to my university days with Haskell and Erlang, plus reading up on Scala and clojure in my spare time and attending talks, but it is all mostly theoretical so I did not mind reading through the basics again.</p>
+
+<p>So far I am most excited about lambdas, default methods and optionals!</p>
+]]></content>
+  </entry>
+  
+</feed>
