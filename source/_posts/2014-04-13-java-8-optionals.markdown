@@ -4,7 +4,7 @@ title: "Java 8 Optionals"
 date: 2014-04-13 09:01:47 +0100
 comments: true
 published: false
-categories: 
+categories: [java8, lambda, optional, programming, function programming]
 ---
 When I first heard that java8 will include Optionals as part of the standard library, I wasn't too excited.
 
