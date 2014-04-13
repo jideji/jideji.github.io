@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Function Programming | That's A Technical Term]]></title>
   <link href="http://jideji.github.io/blog/categories/function-programming/atom.xml" rel="self"/>
   <link href="http://jideji.github.io/"/>
-  <updated>2014-04-13T10:24:19+01:00</updated>
+  <updated>2014-04-13T22:06:38+01:00</updated>
   <id>http://jideji.github.io/</id>
   <author>
     <name><![CDATA[Daniel Josefsson]]></name>
@@ -205,6 +205,32 @@
 </span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printLengthOfSingerName</span><span class="o">(</span><span class="n">Song</span> <span class="n">song</span><span class="o">)</span> <span class="o">{</span>
 </span><span class='line'>    <span class="n">song</span><span class="o">.</span><span class="na">singer</span><span class="o">()</span>
 </span><span class='line'>            <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">singer</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">singer</span><span class="o">.</span><span class="na">name</span><span class="o">().</span><span class="na">length</span><span class="o">())</span>
+</span><span class='line'>            <span class="o">.</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">l</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Length of singer name: &quot;</span> <span class="o">+</span> <span class="n">l</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>As with the guava version of Optional, even if an object is not explicitly an Optional but a possible null then you can turn it into an Optional. Also, you can use multiple map functions to protect yourself against any null pointer exceptions:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">printLengthOfArtistName</span><span class="o">(</span><span class="n">Song</span> <span class="n">song</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Optional</span><span class="o">.</span><span class="na">ofNullable</span><span class="o">(</span><span class="n">song</span><span class="o">.</span><span class="na">artist</span><span class="o">())</span>
+</span><span class='line'>            <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">artist</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">artist</span><span class="o">.</span><span class="na">name</span><span class="o">())</span> <span class="c1">// will not be invoked if artist is null</span>
+</span><span class='line'>            <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">name</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">name</span><span class="o">.</span><span class="na">length</span><span class="o">())</span> <span class="c1">// will not be invoked if name is null</span>
 </span><span class='line'>            <span class="o">.</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">l</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Length of singer name: &quot;</span> <span class="o">+</span> <span class="n">l</span><span class="o">));</span>
 </span><span class='line'><span class="o">}</span>
 </span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
