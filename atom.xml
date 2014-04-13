@@ -4,7 +4,7 @@
   <title><![CDATA[That's A Technical Term]]></title>
   <link href="http://jideji.github.io/atom.xml" rel="self"/>
   <link href="http://jideji.github.io/"/>
-  <updated>2014-04-11T21:42:10+01:00</updated>
+  <updated>2014-04-13T10:24:19+01:00</updated>
   <id>http://jideji.github.io/</id>
   <author>
     <name><![CDATA[Daniel Josefsson]]></name>
@@ -12,6 +12,190 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Java 8 Optionals]]></title>
+    <link href="http://jideji.github.io/blog/2014/04/13/java-8-optionals/"/>
+    <updated>2014-04-13T09:01:47+01:00</updated>
+    <id>http://jideji.github.io/blog/2014/04/13/java-8-optionals</id>
+    <content type="html"><![CDATA[<p>When I first heard that java8 will include Optionals as part of the standard library, I wasn&rsquo;t too excited.</p>
+
+<p>Guava Optional had already been out there for a long time, and so we had tried to use it at work in places where it makes sense. It turned out that it was mostly useful for its .or(value) method, returning a default value. In any other case you would have to create a Supplier, and you would have to call the .get() call in the end anyway to get the actual value out.</p>
+
+<p>What I didn&rsquo;t think about was the fact that the problems with creating Suppliers go away. Also, in the java8 version they have introduced a new method .ifPresent(Consumer).</p>
+
+<p>This means that you can use it in cases where you want to build something.</p>
+
+<p>Say you want to build a string based on a bean that has some optional data.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Song</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Artist</span> <span class="n">artist</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">title</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Artist</span><span class="o">&gt;</span> <span class="n">singer</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Song</span><span class="o">(</span><span class="n">Artist</span> <span class="n">artist</span><span class="o">,</span> <span class="n">String</span> <span class="n">title</span><span class="o">,</span> <span class="n">Artist</span> <span class="n">singer</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">artist</span> <span class="o">=</span> <span class="n">artist</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">singer</span> <span class="o">=</span> <span class="n">Optional</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">singer</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Song</span><span class="o">(</span><span class="n">Artist</span> <span class="n">artist</span><span class="o">,</span> <span class="n">String</span> <span class="n">title</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">artist</span> <span class="o">=</span> <span class="n">artist</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">singer</span> <span class="o">=</span> <span class="n">Optional</span><span class="o">.</span><span class="na">empty</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Artist</span> <span class="nf">artist</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">artist</span><span class="o">;</span> <span class="o">}</span>
+</span><span class='line'>    <span class="n">String</span> <span class="nf">title</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">title</span><span class="o">;</span> <span class="o">}</span>
+</span><span class='line'>    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Artist</span><span class="o">&gt;</span> <span class="nf">singer</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">singer</span><span class="o">;</span> <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">class</span> <span class="nc">Artist</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Artist</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">static</span> <span class="n">Artist</span> <span class="nf">artist</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">Artist</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">String</span> <span class="nf">name</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">name</span><span class="o">;</span> <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You have a class that wants to print out the song details:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SongInfoPrinter</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Song</span> <span class="n">song1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Song</span><span class="o">(</span>
+</span><span class='line'>            <span class="n">artist</span><span class="o">(</span><span class="s">&quot;Stereophonics&quot;</span><span class="o">),</span>
+</span><span class='line'>            <span class="s">&quot;She&#39;s Alright&quot;</span><span class="o">,</span>
+</span><span class='line'>            <span class="n">artist</span><span class="o">(</span><span class="s">&quot;Kelly Jones&quot;</span><span class="o">));</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Song</span> <span class="n">song2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Song</span><span class="o">(</span>
+</span><span class='line'>            <span class="n">artist</span><span class="o">(</span><span class="s">&quot;Beegie Adair&quot;</span><span class="o">),</span>
+</span><span class='line'>            <span class="s">&quot;Manhattan&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">print</span><span class="o">(</span><span class="n">song1</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">print</span><span class="o">(</span><span class="n">song2</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">...</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You only want to print out the Lead singer if there is one. You can then do the following:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">Song</span> <span class="n">song</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">sb</span>
+</span><span class='line'>            <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;Artist: &quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">song</span><span class="o">.</span><span class="na">artist</span><span class="o">().</span><span class="na">name</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">)</span>
+</span><span class='line'>            <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;Title: &quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">song</span><span class="o">.</span><span class="na">title</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="c1">// singer is optional</span>
+</span><span class='line'>        <span class="n">song</span><span class="o">.</span><span class="na">singer</span><span class="o">().</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">singer</span> <span class="o">-&gt;</span>
+</span><span class='line'>                        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;Lead singer: &quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">singer</span><span class="o">.</span><span class="na">name</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">)</span>
+</span><span class='line'>        <span class="o">);</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sb</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Optionals also have a mapping function, meaning it can transform the data if available.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">printLengthOfSingerName</span><span class="o">(</span><span class="n">Song</span> <span class="n">song</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">song</span><span class="o">.</span><span class="na">singer</span><span class="o">()</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">singer</span> <span class="o">-&gt;</span> <span class="n">singer</span><span class="o">.</span><span class="na">name</span><span class="o">().</span><span class="na">length</span><span class="o">())</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">l</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Length of singer name: &quot;</span> <span class="o">+</span> <span class="n">l</span><span class="o">));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is great for the <a href="http://en.wikipedia.org/wiki/Builder_pattern">builder pattern</a> in general!</p>
+
+<p>I do wish they would have added an .ifAbsent(Runnable) method though, as you sometimes might want to perform an operation if the optional is empty. Also, it would have been great if you could have chained .ifPresent() calls. Then you could have called</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// not possible</span>
+</span><span class='line'><span class="n">optional</span>
+</span><span class='line'>    <span class="o">.</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">e</span> <span class="o">-&gt;</span> <span class="n">someSometing</span><span class="o">(</span><span class="n">e</span><span class="o">))</span>
+</span><span class='line'>    <span class="o">.</span><span class="na">ifAbsent</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">doSomethingElse</span><span class="o">());</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Thoughts on Conferences]]></title>
