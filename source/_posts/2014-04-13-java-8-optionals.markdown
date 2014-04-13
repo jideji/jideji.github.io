@@ -100,6 +100,18 @@ Optionals also have a mapping function, meaning it can transform the data if ava
     }
 {% endcodeblock %}
 
+As with the guava version of Optional, even if an object is not explicitly an Optional but a possible null then you can turn it into an Optional. Also, you can use multiple map functions to protect yourself against any null pointer exceptions:
+
+{% codeblock lang:java %}
+    private static void printLengthOfArtistName(Song song) {
+        Optional.ofNullable(song.artist())
+                .map(artist -> artist.name()) // will not be invoked if artist is null
+                .map(name -> name.length()) // will not be invoked if name is null
+                .ifPresent(l -> System.out.println("Length of singer name: " + l));
+    }
+{% endcodeblock %}
+
+
 This is great for the [builder pattern](http://en.wikipedia.org/wiki/Builder_pattern) in general!
 
 I do wish they would have added an .ifAbsent(Runnable) method though, as you sometimes might want to perform an operation if the optional is empty. Also, it would have been great if you could have chained .ifPresent() calls. Then you could have called
