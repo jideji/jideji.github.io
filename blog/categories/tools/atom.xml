@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Tools | That's A Technical Term]]></title>
   <link href="http://jideji.github.io/blog/categories/tools/atom.xml" rel="self"/>
   <link href="http://jideji.github.io/"/>
-  <updated>2014-10-19T23:08:58+01:00</updated>
+  <updated>2014-10-19T23:11:17+01:00</updated>
   <id>http://jideji.github.io/</id>
   <author>
     <name><![CDATA[Daniel Josefsson]]></name>
@@ -19,7 +19,7 @@
     <updated>2014-10-18T20:42:38+01:00</updated>
     <id>http://jideji.github.io/blog/2014/10/18/using-jq-to-manipulate-json</id>
     <content type="html"><![CDATA[<p>Most of our web services at work speak json. Sometimes it is nice to be able to extract select information from the responses.
-I find <a href="http://stedolan.github.io/jq/">jq</a> to be exceptionally suited for these situations.</p>
+I find <a href="http://stedolan.github.io/jq/">jq</a> to be exceptionally well suited for these situations.</p>
 
 <p>The syntax can be perplexing in the beginning, and the tutorial and manual do not (in my opinion) explain in enough
 detail how you should think when writing your filters, and how you combine them.</p>
