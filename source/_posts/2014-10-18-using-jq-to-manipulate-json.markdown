@@ -7,7 +7,7 @@ categories: [bash,jq,tools]
 ---
 
 Most of our web services at work speak json. Sometimes it is nice to be able to extract select information from the responses.
-I find [jq](http://stedolan.github.io/jq/) to be exceptionally suited for these situations.
+I find [jq](http://stedolan.github.io/jq/) to be exceptionally well suited for these situations.
 
 The syntax can be perplexing in the beginning, and the tutorial and manual do not (in my opinion) explain in enough
 detail how you should think when writing your filters, and how you combine them.
