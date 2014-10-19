@@ -9,7 +9,8 @@
   <meta name="author" content="Daniel Josefsson">
 
   
-  <meta name="description" content="When I first heard that java8 will include Optionals as part of the standard library, I wasn&rsquo;t too excited. Guava Optional had already been out &hellip;">
+  <meta name="description" content="Most of our web services at work speak json. Sometimes it is nice to be able to extract select information from the responses.
+I find jq to be &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -71,7 +72,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/04/13/java-8-optionals/">Java 8 Optionals</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/10/18/using-jq-to-manipulate-json/">Using Jq to Manipulate JSON</a></h1>
     
     
       <p class="meta">
@@ -87,24 +88,301 @@
   
 
 
-<time datetime="2014-04-13T09:01:47+01:00" pubdate data-updated="true">Apr 13<span>th</span>, 2014</time>
+<time datetime="2014-10-18T20:42:38+01:00" pubdate data-updated="true">Oct 18<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>When I first heard that java8 will include Optionals as part of the standard library, I wasn&rsquo;t too excited.</p>
+  <div class="entry-content"><p>Most of our web services at work speak json. Sometimes it is nice to be able to extract select information from the responses.
+I find <a href="http://stedolan.github.io/jq/">jq</a> to be exceptionally suited for these situations.</p>
 
-<p>Guava Optional had already been out there for a long time, and so we had tried to use it at work in places where it makes sense. It turned out that it was mostly useful for its .or(value) method, returning a default value. In any other case you would have to create a Supplier, and you would have to call the .get() call in the end anyway to get the actual value out.</p>
+<p>The syntax can be perplexing in the beginning, and the tutorial and manual do not (in my opinion) explain in enough
+detail how you should think when writing your filters, and how you combine them.</p>
 
-<p>What I didn&rsquo;t think about was the fact that the problems with creating Suppliers go away. Also, in the java8 version they have introduced a new method .ifPresent(Consumer).</p>
+<p>The program takes what is called a filter. A filter basically generates output that is usually based on the input.</p>
 
-<p>This means that you can use it in cases where you want to build something.</p>
+<h2>Basic usage</h2>
 
-<p>Say you want to build a string based on a bean that has some optional data.</p>
+<p>The simplest case is where you just copy the input to output:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>Simple case </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">&#39;{&quot;key&quot;: &quot;value&quot;}&#39;</span> | jq .
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>  <span class="s2">&quot;key&quot;</span>: <span class="s2">&quot;value&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since jq pretty-prints the json by default (can be changed to compact mode by using the <code>-c</code> flag) the output is nicely formatted.</p>
+
+<p>The single dot just tells jq to copy the root node. If you just want the value you can type:</p>
+
+<figure class='code'><figcaption><span>Extract the value of field &#8216;key&#8217; </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">&#39;{&quot;key&quot;: &quot;value&quot;}&#39;</span> | jq .key
+</span><span class='line'><span class="s2">&quot;value&quot;</span>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">&#39;{&quot;key&quot;: &quot;value&quot;}&#39;</span> | jq -r .key
+</span><span class='line'>value
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see, <code>-r</code> (<em>raw-output</em>) unwraps the string.</p>
+
+<p>You can use multiple filters on your data. Let us say that you want to count the number of elements in an array. You
+first want to pick out the array, and then run a filter called <code>length</code> on it:</p>
+
+<figure class='code'><figcaption><span>Extract the value of field &#8216;key&#8217; </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">&#39;{&quot;list&quot;: [ &quot;value1&quot;, &quot;value2&quot;, &quot;value3&quot; ]}&#39;</span> | jq <span class="s1">&#39;.list | length&#39;</span>
+</span><span class='line'>3
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In this example <code>.list</code> picks the array from the <code>list</code> field. This is piped to the <code>length</code> filter which returns the
+number of elements in the array.</p>
+
+<h2>Advanced usage</h2>
+
+<p>Now let us consider a slightly more complicated json object. Spotify has an open API where you can search for
+tracks and albums.</p>
+
+<p>Let us assume that we want to find songs from the Book Of Mormons.</p>
+
+<p>We will use this search: <a href="https://api.spotify.com/v1/search?type=track&amp;market=gb&amp;q=The+Book+Of+Mormon">https://api.spotify.com/v1/search?type=track&amp;market=gb&amp;q=The+Book+Of+Mormon</a></p>
+
+<p>The json has the following format (excluding a lot of to us uninteresting data):</p>
+
+<figure class='code'><figcaption><span>Spotify json formation </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;tracks&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>        <span class="nt">&quot;album&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="err">...</span> <span class="p">},</span>
+</span><span class='line'>        <span class="nt">&quot;artists&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>          <span class="p">{</span>
+</span><span class='line'>            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;artist name 1&quot;</span>
+</span><span class='line'>          <span class="p">},</span>
+</span><span class='line'>          <span class="err">...</span>
+</span><span class='line'>        <span class="p">],</span>
+</span><span class='line'>        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;track name&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;track_number&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;duration_ms&quot;</span><span class="p">:</span> <span class="mi">123845</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Store the search result as a file:</p>
+
+<figure class='code'><figcaption><span>Save the search result as json </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>curl <span class="s1">&#39;https://api.spotify.com/v1/search?type=track&amp;market=gb&amp;q=The+Book+Of+Mormon&#39;</span> &gt; tracks.json
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OK now let&rsquo;s figure out who is performing in these songs:</p>
+
+<figure class='code'><figcaption><span>Extract artist names </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>jq -r <span class="s1">&#39;[.tracks.items[].artists[].name] | unique | .[]&#39;</span> tracks.json
+</span><span class='line'>Andrew Rannells
+</span><span class='line'>Asmeret Gebremichael
+</span><span class='line'>Benjamin Schrader
+</span><span class='line'>Brian Sears
+</span><span class='line'>Brian Tyree Henry
+</span><span class='line'>Clark Johnson
+</span><span class='line'>...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Woah, OK that was a big step! Let us break it down.</p>
+
+<ul>
+<li><code>.tracks.items[].artists[].name</code> clearly picks all the artist names</li>
+<li>this is then wrapped in an array</li>
+<li>the array is sent to a <code>unique</code> filter which sorts the array and removes any duplicates</li>
+<li><code>.[]</code> unwraps the array (we would otherwise see an array being returned by jq)</li>
+</ul>
+
+
+<p>The second step is hinting at another feature of jq: you can construct json objects, not only pick them out from
+an existing json object.</p>
+
+<p>Now let us say that we want to construct new json from the track.json file.
+We want to create a simplifed tracklist for the album.. The tracks should be sorted by track index. We start
+off by creating the list of tracks.</p>
+
+<figure class='code'><figcaption><span>Track information, sorted by index </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>jq -r <span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">&gt; [</span>
+</span><span class='line'><span class="s1">&gt;   .tracks.items[] |</span>
+</span><span class='line'><span class="s1">&gt;   {</span>
+</span><span class='line'><span class="s1">&gt;     index: .track_number,</span>
+</span><span class='line'><span class="s1">&gt;     name,</span>
+</span><span class='line'><span class="s1">&gt;     album: .album.name,</span>
+</span><span class='line'><span class="s1">&gt;   }] | sort_by(.index)&#39;</span> tracks.json
+</span><span class='line'><span class="o">[</span>
+</span><span class='line'>  <span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;index&quot;</span>: 1,
+</span><span class='line'>    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Hello!&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;album&quot;</span>: <span class="s2">&quot;The Book of Mormon&quot;</span>
+</span><span class='line'>  <span class="o">}</span>,
+</span><span class='line'>  <span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;index&quot;</span>: 1,
+</span><span class='line'>    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;The Book of Mormon in 3 Minutes&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;album&quot;</span>: <span class="s2">&quot;The Book of Mormon in 3 Minutes&quot;</span>
+</span><span class='line'>  <span class="o">}</span>,
+</span><span class='line'>  <span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;index&quot;</span>: 2,
+</span><span class='line'>    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Book Of Mormon Stories/The Golden Plates&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;album&quot;</span>: <span class="s2">&quot;Sharing Time&quot;</span>
+</span><span class='line'>  <span class="o">}</span>,
+</span><span class='line'>  ...
+</span><span class='line'><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Kind of works. As we don&rsquo;t specify the source of <code>name</code>, jq will map it to the input <code>name</code>.
+Unfortunately Spotify doesn&rsquo;t let you search exact album titles, so will have to do the filtering ourselves:</p>
+
+<figure class='code'><figcaption><span>Track information only for tracks from the specific album, sorted by index </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>jq -r <span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">&gt; [</span>
+</span><span class='line'><span class="s1">&gt;   .tracks.items[] |</span>
+</span><span class='line'><span class="s1">&gt;   select(.album.name == &quot;The Book of Mormon&quot;) |</span>
+</span><span class='line'><span class="s1">&gt;   {</span>
+</span><span class='line'><span class="s1">&gt;     index: .track_number,</span>
+</span><span class='line'><span class="s1">&gt;     name,</span>
+</span><span class='line'><span class="s1">&gt;     album: .album.name,</span>
+</span><span class='line'><span class="s1">&gt;     length: (.duration_ms / 1000 / 60)</span>
+</span><span class='line'><span class="s1">&gt;   }</span>
+</span><span class='line'><span class="s1">&gt; ] | sort_by(.index)&#39;</span> tracks.json
+</span><span class='line'><span class="o">[</span>
+</span><span class='line'>  <span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;index&quot;</span>: 1,
+</span><span class='line'>    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Hello!&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;album&quot;</span>: <span class="s2">&quot;The Book of Mormon&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;length&quot;</span>: 2.8671
+</span><span class='line'>  <span class="o">}</span>,
+</span><span class='line'>  <span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;index&quot;</span>: 2,
+</span><span class='line'>    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Two By Two&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;album&quot;</span>: <span class="s2">&quot;The Book of Mormon&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;length&quot;</span>: 4.5262166666666666
+</span><span class='line'>  <span class="o">}</span>,
+</span><span class='line'>  <span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;index&quot;</span>: 3,
+</span><span class='line'>    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;You And Me (But Mostly Me)&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;album&quot;</span>: <span class="s2">&quot;The Book of Mormon&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;length&quot;</span>: 2.720666666666667
+</span><span class='line'>  <span class="o">}</span>,
+</span><span class='line'>  ...
+</span><span class='line'><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Much better! <code>select</code> only picks the elements that match the given criteria. We also added a <code>duration</code> while we were
+at it. As you can see simple maths can be applied.</p>
+
+<p>Now that we have the data we want, we can generate the final json we wanted:</p>
+
+<figure class='code'><figcaption><span>Album information </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -138,248 +416,72 @@
 <span class='line-number'>32</span>
 <span class='line-number'>33</span>
 <span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Song</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Artist</span> <span class="n">artist</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">title</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Artist</span><span class="o">&gt;</span> <span class="n">singer</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">Song</span><span class="o">(</span><span class="n">Artist</span> <span class="n">artist</span><span class="o">,</span> <span class="n">String</span> <span class="n">title</span><span class="o">,</span> <span class="n">Artist</span> <span class="n">singer</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">artist</span> <span class="o">=</span> <span class="n">artist</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">singer</span> <span class="o">=</span> <span class="n">Optional</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">singer</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">Song</span><span class="o">(</span><span class="n">Artist</span> <span class="n">artist</span><span class="o">,</span> <span class="n">String</span> <span class="n">title</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">artist</span> <span class="o">=</span> <span class="n">artist</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">singer</span> <span class="o">=</span> <span class="n">Optional</span><span class="o">.</span><span class="na">empty</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">Artist</span> <span class="nf">artist</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">artist</span><span class="o">;</span> <span class="o">}</span>
-</span><span class='line'>    <span class="n">String</span> <span class="nf">title</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">title</span><span class="o">;</span> <span class="o">}</span>
-</span><span class='line'>    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Artist</span><span class="o">&gt;</span> <span class="nf">singer</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">singer</span><span class="o">;</span> <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="kd">class</span> <span class="nc">Artist</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">Artist</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">static</span> <span class="n">Artist</span> <span class="nf">artist</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">Artist</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">String</span> <span class="nf">name</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">name</span><span class="o">;</span> <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You have a class that wants to print out the song details:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SongInfoPrinter</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Song</span> <span class="n">song1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Song</span><span class="o">(</span>
-</span><span class='line'>            <span class="n">artist</span><span class="o">(</span><span class="s">&quot;Stereophonics&quot;</span><span class="o">),</span>
-</span><span class='line'>            <span class="s">&quot;She&#39;s Alright&quot;</span><span class="o">,</span>
-</span><span class='line'>            <span class="n">artist</span><span class="o">(</span><span class="s">&quot;Kelly Jones&quot;</span><span class="o">));</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Song</span> <span class="n">song2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Song</span><span class="o">(</span>
-</span><span class='line'>            <span class="n">artist</span><span class="o">(</span><span class="s">&quot;Beegie Adair&quot;</span><span class="o">),</span>
-</span><span class='line'>            <span class="s">&quot;Manhattan&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">print</span><span class="o">(</span><span class="n">song1</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">print</span><span class="o">(</span><span class="n">song2</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">...</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>jq -r <span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">&gt; [</span>
+</span><span class='line'><span class="s1">&gt;   .tracks.items[] |</span>
+</span><span class='line'><span class="s1">&gt;   select(.album.name == &quot;The Book of Mormon&quot;) |</span>
+</span><span class='line'><span class="s1">&gt;   {</span>
+</span><span class='line'><span class="s1">&gt;     index:.track_number,</span>
+</span><span class='line'><span class="s1">&gt;     name,</span>
+</span><span class='line'><span class="s1">&gt;     length:(.duration_ms / 1000 / 60)</span>
+</span><span class='line'><span class="s1">&gt;   }</span>
+</span><span class='line'><span class="s1">&gt; ] | sort_by(.index) |</span>
+</span><span class='line'><span class="s1">&gt; {</span>
+</span><span class='line'><span class="s1">&gt;   title: &quot;The Book of Mormon&quot;,</span>
+</span><span class='line'><span class="s1">&gt;   average_length: ([ .[].length ] | add / length),</span>
+</span><span class='line'><span class="s1">&gt;   tracks: .</span>
+</span><span class='line'><span class="s1">&gt; }&#39;</span> tracks.json
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>  <span class="s2">&quot;title&quot;</span>: <span class="s2">&quot;The Book of Mormon&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;average_length&quot;</span>: 4.2499520833333335,
+</span><span class='line'>  <span class="s2">&quot;tracks&quot;</span>: <span class="o">[</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>      <span class="s2">&quot;index&quot;</span>: 1,
+</span><span class='line'>      <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Hello!&quot;</span>,
+</span><span class='line'>      <span class="s2">&quot;length&quot;</span>: 2.8671
+</span><span class='line'>    <span class="o">}</span>,
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>      <span class="s2">&quot;index&quot;</span>: 2,
+</span><span class='line'>      <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Two By Two&quot;</span>,
+</span><span class='line'>      <span class="s2">&quot;length&quot;</span>: 4.5262166666666666
+</span><span class='line'>    <span class="o">}</span>,
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>      <span class="s2">&quot;index&quot;</span>: 3,
+</span><span class='line'>      <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;You And Me (But Mostly Me)&quot;</span>,
+</span><span class='line'>      <span class="s2">&quot;length&quot;</span>: 2.720666666666667
+</span><span class='line'>    <span class="o">}</span>,
+</span><span class='line'>    ...
+</span><span class='line'>  <span class="o">]</span>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>You only want to print out the Lead singer if there is one. You can then do the following:</p>
+<p>We have the same transformation as before, and then we send it to a new filter:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">Song</span> <span class="n">song</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">sb</span>
-</span><span class='line'>            <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;Artist: &quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">song</span><span class="o">.</span><span class="na">artist</span><span class="o">().</span><span class="na">name</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">)</span>
-</span><span class='line'>            <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;Title: &quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">song</span><span class="o">.</span><span class="na">title</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="c1">// singer is optional</span>
-</span><span class='line'>        <span class="n">song</span><span class="o">.</span><span class="na">singer</span><span class="o">().</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">singer</span> <span class="o">-&gt;</span>
-</span><span class='line'>                        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;Lead singer: &quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">singer</span><span class="o">.</span><span class="na">name</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sb</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<ul>
+<li><code>title</code> is a hardcoded string</li>
+<li><code>average_length</code> is a calculation of the average length of the songs
+
+<ul>
+<li>we extract the length of each song and put them in an array. We then pipe it to both <code>add</code> and <code>length</code>. <code>add</code> will
+sum up all the values in the array, while length returns the length of the array</li>
+</ul>
+</li>
+<li><code>tracks</code> is simply the json we generated before</li>
+</ul>
 
 
-<p>Optionals also have a mapping function, meaning it can transform the data if available.</p>
+<p>So you can see that jq is incredibly powerful when it comes to manipulating json. Don&rsquo;t worry if you struggle to
+understand everything. To be honest I keep forgetting how it works, which is the reason I put this post together.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">printLengthOfSingerName</span><span class="o">(</span><span class="n">Song</span> <span class="n">song</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">song</span><span class="o">.</span><span class="na">singer</span><span class="o">()</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">singer</span> <span class="o">-&gt;</span> <span class="n">singer</span><span class="o">.</span><span class="na">name</span><span class="o">().</span><span class="na">length</span><span class="o">())</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">l</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Length of singer name: &quot;</span> <span class="o">+</span> <span class="n">l</span><span class="o">));</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>The best way to learn is to simply experiment with it. There is an online tool where you
+can try: <a href="https://jqplay.org/">jqplay.org</a></p>
 
-
-<p>As with the guava version of Optional, even if an object is not explicitly an Optional but a possible null then you can turn it into an Optional. Also, you can use multiple map functions to protect yourself against any null pointer exceptions:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">printLengthOfArtistName</span><span class="o">(</span><span class="n">Song</span> <span class="n">song</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Optional</span><span class="o">.</span><span class="na">ofNullable</span><span class="o">(</span><span class="n">song</span><span class="o">.</span><span class="na">artist</span><span class="o">())</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">artist</span> <span class="o">-&gt;</span> <span class="n">artist</span><span class="o">.</span><span class="na">name</span><span class="o">())</span> <span class="c1">// will not be invoked if artist is null</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">name</span> <span class="o">-&gt;</span> <span class="n">name</span><span class="o">.</span><span class="na">length</span><span class="o">())</span> <span class="c1">// will not be invoked if name is null</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">l</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Length of singer name: &quot;</span> <span class="o">+</span> <span class="n">l</span><span class="o">));</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is great for the <a href="http://en.wikipedia.org/wiki/Builder_pattern">builder pattern</a> in general!</p>
-
-<p>I do wish they would have added an .ifAbsent(Runnable) method though, as you sometimes might want to perform an operation if the optional is empty. Also, it would have been great if you could have chained .ifPresent() calls. Then you could have called</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// not possible</span>
-</span><span class='line'><span class="n">optional</span>
-</span><span class='line'>    <span class="o">.</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">e</span> <span class="o">-&gt;</span> <span class="n">someSometing</span><span class="o">(</span><span class="n">e</span><span class="o">))</span>
-</span><span class='line'>    <span class="o">.</span><span class="na">ifAbsent</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">doSomethingElse</span><span class="o">());</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/11/thoughts-on-conferences/">Thoughts on Conferences</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-11T20:52:29+01:00" pubdate data-updated="true">Apr 11<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I have attended a few of tech conferences in the last couple of years.
-JavaOne and QConn in 2012, and JavaOne and LJC Open Conference in 2013.</p>
-
-<p>That reminds me: &lsquo;Design Patterns In Modern JVM Languages&rsquo; by <a href="https://twitter.com/venkat_s">Venkat Subramaniam</a> is strongly recommended, attend if you can! Or at least watch the video on <a href="https://www.youtube.com/watch?v=nwxcI6FNbu4">YouTube</a>.</p>
-
-<h2>Big vs small conference</h2>
-
-<p>So. JavaOne is huge. LJC Open Conference not very big. Which is best?</p>
-
-<p>Naturally they have their positives and negatives.</p>
-
-<p>JavaOne, because of its size, attracts lots of talented speakers and guests. They have maaany different tracks with different focus, so you have a lot to choose from.</p>
-
-<p>LJC Open Conference on the other hand is informal. People decide on the day if they want to do a talk, the talks are sorted, and you pick what you want to attend. It is all very relaxed, you have experienced speaker mixed with first-timers, and it all feels very personal.</p>
-
-<p>I personally prefer the smaller, more informal, type.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/09/java-8/">Java 8</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-09T20:28:56+01:00" pubdate data-updated="true">Apr 9<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I was with increasing excitement following the upcoming release of java7 with lambdas. Naturally I was extremely disappointed when it was taken out. And then java 8 was delayed. But who cares? It is here now!</p>
-
-<p><a href="https://leanpub.com/whatsnewinjava8/read">What&rsquo;s New in Java 8</a> is a great page listing the highlights of Java8. It gives you a nice overview of the most prominent features along with a brief explanation of each.</p>
-
-<p>I can also recommend getting the book &lsquo;<a href="http://shop.oreilly.com/product/0636920030713.do">Java 8 Lambdas</a>&rsquo; by <a href="https://twitter.com/RichardWarburto">Richard Warburton</a> which is a a really good introduction to lambdas in java8 even if you have no experience with functional programming. I have a fairly good understanding of fp thanks to my university days with Haskell and Erlang, plus reading up on Scala and clojure in my spare time and attending talks, but it is all mostly theoretical so I did not mind reading through the basics again.</p>
-
-<p>So far I am most excited about lambdas, default methods and optionals!</p>
+<p>There are more functions available, but these are most of what I use. You can find them all in the
+<a href="http://stedolan.github.io/jq/manual/">manual</a>. Just make sure you have the latest version of jq!</p>
 </div>
   
   
@@ -661,15 +763,7 @@ JavaOne and QConn in 2012, and JavaOne and LJC Open Conference in 2013.</p>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/04/13/java-8-optionals/">Java 8 Optionals</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/11/thoughts-on-conferences/">Thoughts on Conferences</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/09/java-8/">Java 8</a>
+        <a href="/blog/2014/10/18/using-jq-to-manipulate-json/">Using Jq to Manipulate JSON</a>
       </li>
     
       <li class="post">
