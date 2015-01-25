@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Lollipop, | That's A Technical Term]]></title>
   <link href="http://jideji.github.io/blog/categories/lollipop/atom.xml" rel="self"/>
   <link href="http://jideji.github.io/"/>
-  <updated>2014-12-14T18:51:54+00:00</updated>
+  <updated>2015-01-25T21:06:08+00:00</updated>
   <id>http://jideji.github.io/</id>
   <author>
     <name><![CDATA[Daniel Josefsson]]></name>
@@ -24,27 +24,31 @@
 technical you really need a physical book. I have been able to write very simple programs, but the GUI part has just
 been a mystery. You need something that tells you <em>why</em> you do something in a certain way.</p>
 
-<p>On amazon, the highest ratated android book as &lsquo;Android Programming &ndash; The Big Nerd Ranch Guide&rsquo; by Bill Phillips and
-Brian Hardy. After having read about 12 chapter I have to agree that it is a really good book!</p>
+<p>On Amazon, the highest rated android book is &lsquo;Android Programming &ndash; The Big Nerd Ranch Guide&rsquo; by Bill Phillips and
+Brian Hardy. After having read about 22 chapters I have to agree that it is a really good book!</p>
 
-<p>Unfortunately it book is now quite old, and they aim to teach you how to write apps that run on devices all the way
+<p>The the book is really well organised. The functionality you add nicely introduces new concepts, and the challenges
+let you explore them deeper, plus reinforce what you have learnt up until that point.</p>
+
+<p>Unfortunately the book is now quite old, and they aim to teach you how to write apps that run on devices all the way
 down to android 4.2. They say in the book that Froyo (2.2) and Gingerbread (2.3.x) make up of about 50% of all devices
-out there. Well according to the <a href="http://developer.android.com/about/dashboards/index.html">latest statistics</a>, that number is now &lt; 10%.</p>
+out there. Well according to the <a href="http://developer.android.com/about/dashboards/index.html">latest statistics</a>, that
+number is now &lt; 10%.</p>
 
 <p>To be honest, since I don&rsquo;t aim to capitalise I wouldn&rsquo;t even have bothered with 50%, only that it would work on my
 phone :)</p>
 
-<p>With the arrival of Lollipop I thought I might as well give it a more serious try. No matter what you think about the
-new design, at least they&rsquo;ve tried to come up with some relatively clear guidelines!</p>
+<p>With the arrival of Lollipop I thought I might as well give it a more serious attempt. No matter what you think about
+the new design, at least they&rsquo;ve tried to come up with some relatively clear guidelines!</p>
 
-<p>And this is where I have had a couple of bumps from following the book. It looks like they have broken a few widgets
-in Lollipop. One widget (view) that seems to have a quite serious overhaul is the DatePicker. The OnChangedDateListener
-will NOT be triggered when you are in calendar mode. Instead you have to set <code>android:datePickerMode=spinner</code> to get
-the old style. You have the same problem with TimePicker. You can read more about it
+<p>And this is where I have had a couple of problems when following the book. It looks like a few widgets are broken in
+Lollipop. One widget (view) that seems to have had a serious overhaul is the DatePicker. The OnChangedDateListener will
+NOT be triggered when you are in calendar mode. Instead you have to set <code>android:datePickerMode=spinner</code> to get the old
+style. You have the same problem with TimePicker. You can read more about it
 <a href="http://forums.bignerdranch.com/viewtopic.php?f=409&amp;t=8298">here</a>.</p>
 
 <p>Even with these issues, I would still recommend this book if you are interested in learning Android. I would say that
-it is almost a requirement to know Java though, you will be struggling otherwise!</p>
+it is almost a requirement to know Java though, you will be certainly be struggling otherwise!</p>
 ]]></content>
   </entry>
   
